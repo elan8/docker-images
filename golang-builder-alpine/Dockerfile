@@ -13,7 +13,7 @@ RUN ./autogen.sh && \
     ./configure --prefix=/export && \
     make -j 3 && \
     make check && \
-    make install && rm -R /tmp/*
+    make install && rm -R /tmp/* && rm /tmp/protobuf.tar.gz
 
 WORKDIR /app
 
@@ -31,5 +31,5 @@ RUN go get github.com/favadi/protoc-go-inject-tag
 
 RUN cp  /export/bin/* /usr/bin/
 
-RUN rm /tmp/protobuf.tar.gz
+ 
 #copy export folder to /usr in order to use protoc in a fresh Alpine image
