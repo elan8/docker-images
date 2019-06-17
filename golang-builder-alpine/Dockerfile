@@ -15,6 +15,8 @@ RUN ./autogen.sh && \
     make check && \
     make install && rm -R /tmp/*
 
+WORKDIR /app
+
 # Install protoc-gen-go
 RUN go get github.com/golang/protobuf/protoc-gen-go
 RUN cp /go/bin/protoc-gen-go /export/bin/
