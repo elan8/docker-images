@@ -13,7 +13,7 @@ RUN ./autogen.sh && \
     ./configure --prefix=/export && \
     make -j 3 && \
     make check && \
-    make install && rm -R /tmp/* && rm /tmp/protobuf.tar.gz
+    make install && rm -R /tmp/* 
 
 WORKDIR /app
 
