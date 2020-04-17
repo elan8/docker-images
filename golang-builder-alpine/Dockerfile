@@ -1,5 +1,5 @@
-FROM golang:1.12-alpine3.9 
-WORKDIR /app
+FROM golang:1.14-alpine
+WORKDIR /tmp
 # System setup
 RUN apk update && apk add git curl build-base autoconf automake libtool clang
 # build and install protoc
@@ -15,21 +15,32 @@ RUN ./autogen.sh && \
     make check && \
     make install && rm -R /tmp/* 
 
-WORKDIR /app
+WORKDIR /golang
 
+COPY tools.go .
+COPY go.mod .
+COPY go.sum .
+RUN go install \
+    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
+#    github.com/protocolbuffers/protobuf-go
+        github.com/golang/protobuf/protoc-gen-go
 # Install protoc-gen-go
-RUN go get github.com/golang/protobuf/protoc-gen-go
-RUN cp /go/bin/protoc-gen-go /export/bin/
+#RUN go get github.com/golang/protobuf/protoc-gen-go
+#RUN cp /go/bin/protoc-gen-go /export/bin/
 
 # Export dependencies
-RUN cp /usr/lib/libstdc++* /export/lib/
-RUN cp /usr/lib/libgcc_s* /export/lib/
-
+#RUN cp /usr/lib/libstdc++* /export/lib/
+#RUN cp /usr/lib/libgcc_s* /export/lib/
+WORKDIR /app
 RUN git clone https://github.com/googleapis/googleapis
-RUN go get -u github.com/golang/protobuf/protoc-gen-go
-RUN go get github.com/favadi/protoc-go-inject-tag
+RUN ls -la
+RUN ls -la /export/include
+#RUN go get -u github.com/golang/protobuf/protoc-gen-go
+#RUN go get github.com/favadi/protoc-go-inject-tag
 
 RUN cp  /export/bin/* /usr/bin/
+RUN cp -r /export/include/google /usr/include/
 
  
 #copy export folder to /usr in order to use protoc in a fresh Alpine image
