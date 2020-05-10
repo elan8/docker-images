@@ -1,4 +1,4 @@
-FROM golang:1.14-alpine
+FROM golang:1.14-alpine as builder 
 WORKDIR /tmp
 # System setup
 RUN apk update && apk add git curl build-base autoconf automake libtool clang
@@ -13,8 +13,12 @@ RUN ./autogen.sh && \
     ./configure --prefix=/export && \
     make -j 3 && \
     make check && \
-    make install && rm -R /tmp/* 
+    make install && rm -R /tmp/*
+WORKDIR /tmp     
+RUN git clone https://github.com/googleapis/googleapis   
+#RUN ls /export/lib
 
+FROM golang:1.14-alpine 
 WORKDIR /golang
 COPY tools.go .
 COPY go.mod .
@@ -24,9 +28,11 @@ RUN go install \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
     github.com/golang/protobuf/protoc-gen-go
 
+COPY --from=builder /export/bin /usr/bin
+COPY --from=builder /export/lib /usr/lib
+COPY --from=builder /export/include/google /usr/include/google
+COPY --from=builder /tmp/googleapis/google /app/google
 WORKDIR /app
-RUN git clone https://github.com/googleapis/googleapis
-RUN ls -la
-RUN ls -la /export/include
-RUN cp  /export/bin/* /usr/bin/
-RUN cp -r /export/include/google /usr/include/
+
+#RUN cp  /export/bin/* /usr/bin/
+#RUN cp -r /export/include/google /usr/include/
