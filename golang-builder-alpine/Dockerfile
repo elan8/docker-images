@@ -28,11 +28,15 @@ RUN go install \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
     github.com/golang/protobuf/protoc-gen-go
 
-COPY --from=builder /export/bin /usr/bin
+#COPY --from=builder /export /export
+#RUN cp  /export/bin/* /usr/bin/
 COPY --from=builder /export/lib /usr/lib
+COPY --from=builder /export/bin /usr/bin
 COPY --from=builder /export/include/google /usr/include/google
 COPY --from=builder /tmp/googleapis/google /app/google
+RUN ls /usr/lib
 WORKDIR /app
+RUN  apk add libstdc++ clang
 
 #RUN cp  /export/bin/* /usr/bin/
 #RUN cp -r /export/include/google /usr/include/
