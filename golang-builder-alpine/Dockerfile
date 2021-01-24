@@ -1,7 +1,10 @@
-FROM golang:1.14-alpine as builder 
+FROM golang:1.15-alpine as builder 
 WORKDIR /tmp
 # System setup
-RUN apk update && apk add git curl build-base autoconf automake libtool clang
+#RUN apk update && apk add git curl build-base autoconf automake libtool clang
+RUN apk update && \
+    apk add --no-cache tzdata ca-certificates alpine-conf git curl build-base autoconf automake libtool clang
+RUN /sbin/setup-timezone -z Europe/Amsterdam
 # build and install protoc
 ENV PROTOBUF_URL https://github.com/google/protobuf/releases/download/v3.6.0/protobuf-cpp-3.6.0.tar.gz
 RUN curl -L -o /tmp/protobuf.tar.gz $PROTOBUF_URL
