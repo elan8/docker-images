@@ -18,7 +18,7 @@ RUN git clone https://github.com/googleapis/googleapis
 
 FROM golang:1.15-alpine 
 RUN apk update && \
-    apk add --no-cache tzdata ca-certificates
+    apk add --no-cache tzdata ca-certificates alpine-conf libstdc++ clang
 RUN /sbin/setup-timezone -z Europe/Amsterdam
 WORKDIR /golang
 COPY tools.go .
@@ -33,6 +33,5 @@ COPY --from=builder /export/bin /usr/bin
 COPY --from=builder /export/include/google /usr/include/google
 COPY --from=builder /tmp/googleapis/google /app/google
 WORKDIR /app
-RUN  apk update && \
-     apk add --no-cache libstdc++ clang
+
 
