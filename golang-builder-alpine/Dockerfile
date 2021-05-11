@@ -1,38 +1,38 @@
 FROM golang:1.16.3-alpine3.13 as builder
 
 # System setup
-RUN apk update && apk add git curl build-base autoconf automake libtool
+RUN apk update && apk add build-base git autoconf automake libtool curl make g++ unzip tar
+RUN gcc --version
 
 # Install protoc
-ENV PROTOBUF_URL https://github.com/google/protobuf/releases/download/v3.3.0/protobuf-cpp-3.3.0.tar.gz
+ENV PROTOBUF_URL https://github.com/google/protobuf/releases/download/v3.16.0/protobuf-cpp-3.16.0.tar.gz
+ENV CXXFLAGS="-std=c++11"
 RUN curl -L -o /tmp/protobuf.tar.gz $PROTOBUF_URL
 WORKDIR /tmp/
-RUN tar xvzf protobuf.tar.gz
-WORKDIR /tmp/protobuf-3.3.0
+RUN tar xvzf protobuf.tar.gz >> /dev/null
+WORKDIR /tmp/protobuf-3.16.0
 RUN mkdir /export
 RUN ./autogen.sh && \
-    ./configure --prefix=/export && \
-    make -j 3 && \
-    make check && \
-    make install
+    ./configure --prefix=/export 
+RUN make && make install
 
-# Install protoc-gen-go
+
 WORKDIR /golang
 COPY tools.go .
 COPY go.mod .
-# COPY go.sum .
-#RUN go 
 RUN go mod tidy
-# RUN go get \
-#     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
-#     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
-#     github.com/golang/protobuf/protoc-gen-go
+COPY json-pg json-pg
+RUN ls -la
+RUN cd json-pg && go install
 RUN go install \
     github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
     github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
     google.golang.org/protobuf/cmd/protoc-gen-go \
-    google.golang.org/grpc/cmd/protoc-gen-go-grpc
-#RUN go get github.com/golang/protobuf/protoc-gen-go
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+    github.com/favadi/protoc-go-inject-tag
+RUN cd /go/bin/ && ls -la
+RUN cp /go/bin/json-pg /export/bin/
+RUN cp /go/bin/protoc-go-inject-tag /export/bin/
 RUN cp /go/bin/protoc-gen-go-grpc /export/bin/
 RUN cp /go/bin/protoc-gen-openapiv2 /export/bin/
 RUN cp /go/bin/protoc-gen-grpc-gateway /export/bin/
