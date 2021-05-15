@@ -1,3 +1,7 @@
+kind: pipeline
+type: kubernetes
+name: docker-images
+
 steps:
 - name: microservice-base
   image: plugins/docker
