@@ -1,0 +1,11 @@
+steps:
+- name: microservice-base
+  image: plugins/docker
+  settings:
+    repo: elan8/docker-images
+    context: microservice-base
+    dockerfile: microservice-base/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
