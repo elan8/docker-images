@@ -6,7 +6,7 @@ steps:
 - name: microservice-base
   image: plugins/docker
   settings:
-    repo: elan8/docker-images
+    repo: jevon82/microservice-base
     context: microservice-base
     dockerfile: microservice-base/Dockerfile
     username:
