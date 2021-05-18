@@ -1,3 +1,3 @@
-# docker-images-private
+# docker-images
 
-Private docker images 
+Public docker images
