@@ -9,6 +9,7 @@ steps:
     repo: jevon82/microservice-base
     context: microservice-base
     dockerfile: microservice-base/Dockerfile
+    cache_from: "jevon82/microservice-base:latest"
     username:
       from_secret: docker_username
     password:
@@ -20,6 +21,7 @@ steps:
     repo: jevon82/golang-builder-alpine
     context: golang-builder-alpine
     dockerfile: golang-builder-alpine/Dockerfile
+    cache_from: "jevon82/golang-builder-alpine:latest"
     username:
       from_secret: docker_username
     password:
