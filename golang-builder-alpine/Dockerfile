@@ -43,7 +43,7 @@ RUN cp /usr/lib/libgcc_s* /export/lib/
 WORKDIR /tmp     
 RUN git clone https://github.com/googleapis/googleapis 
 
-FROM golang:golang:1.20.1-alpine3.16
+FROM golang:1.20.1-alpine3.16
 RUN apk update && \
     apk add --no-cache tzdata ca-certificates alpine-conf libstdc++ clang
 RUN /sbin/setup-timezone -z Europe/Amsterdam
