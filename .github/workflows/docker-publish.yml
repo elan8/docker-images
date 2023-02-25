@@ -95,7 +95,7 @@ jobs:
         # against the sigstore community Fulcio instance.
         run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
 
- build-golang-builder-alpine:
+  build-golang-builder-alpine:
 
     runs-on: ubuntu-latest
     permissions:
