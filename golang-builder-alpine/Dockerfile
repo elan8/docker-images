@@ -1,4 +1,4 @@
-FROM golang:1.16.3-alpine3.13 as builder
+FROM golang:1.20.1-alpine3.16 as builder
 
 # System setup
 RUN apk update && apk add build-base git autoconf automake libtool curl make g++ unzip tar
@@ -43,7 +43,7 @@ RUN cp /usr/lib/libgcc_s* /export/lib/
 WORKDIR /tmp     
 RUN git clone https://github.com/googleapis/googleapis 
 
-FROM golang:1.16.3-alpine3.13
+FROM golang:golang:1.20.1-alpine3.16
 RUN apk update && \
     apk add --no-cache tzdata ca-certificates alpine-conf libstdc++ clang
 RUN /sbin/setup-timezone -z Europe/Amsterdam
